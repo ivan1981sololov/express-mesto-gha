@@ -4,7 +4,7 @@
   },
   extends: [
     'airbnb-base'
-  ]
+  ],
   "rules": {
     "no-var": "error",
     "semi": "error",

@@ -70,10 +70,11 @@ const updateAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ msg: 'Некорректные данные' });
+        return res.status(400).send({ msg: 'Некорректные данные' });
+      } else {
+        console.log(`Error${err}`);
+        res.status(500).send({ msg: 'Error!' });
       }
-      console.log(`Error${err}`);
-      res.status(500).send({ msg: 'Error!' });
     });
 };
 

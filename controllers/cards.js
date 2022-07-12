@@ -29,10 +29,10 @@ const deleteCard = (req, res) => Card.findByIdAndDelete(req.params.cardId)
   })
   .catch((err) => {
     if (err.name === 'CastError') {
-      res.status(400).send({ msg: 'Невалидный id' });
+      return res.status(400).send({ msg: 'Невалидный id' });
     }
-    if (err.message === 'Нет карточки/пользователя по заданному id') {
-      res.status(404).send({ msg: 'Нет карточки' });
+    else if (err.message === 'Нет карточки/пользователя по заданному id') {
+      return res.status(404).send({ msg: 'Нет карточки' });
     } else {
       console.log(`Error${err}`);
       res.status(500).send({ msg: 'Error!' });

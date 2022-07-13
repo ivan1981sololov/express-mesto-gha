@@ -25,5 +25,5 @@ app.use(routesCards);
 app.use((req, res) => { res.status(404).send({ message: 'Такого роута не существует' }); });
 
 app.listen(PORT, () => {
-  console.log('Express is running');
+  ('Express is running');
 });

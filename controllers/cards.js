@@ -2,8 +2,7 @@ const Card = require('../models/card');
 
 const getCards = (req, res) => Card.find({})
   .then((cards) => res.status(200).send(cards))
-  .catch((err) => {
-    console.log(`Error${err}`);
+  .catch(() => {
     res.status(500).send({ msg: 'Error!' });
   });
 
@@ -16,7 +15,6 @@ const createCards = (req, res) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ msg: 'Некорректные данные' });
       } else {
-        console.log(`Error${err}`);
         res.status(500).send({ msg: 'Error!' });
       }
     });
@@ -27,16 +25,15 @@ const deleteCard = (req, res) => Card.findByIdAndDelete(req.params.cardId)
     if (!card) throw new Error('Нет карточки/пользователя по заданному id');
     return res.status(200).send(card);
   })
+  // eslint-disable-next-line consistent-return
   .catch((err) => {
     if (err.name === 'CastError') {
       return res.status(400).send({ msg: 'Невалидный id' });
     }
-    else if (err.message === 'Нет карточки/пользователя по заданному id') {
-      return res.status(404).send({ msg: 'Нет карточки' });
-    } else {
-      console.log(`Error${err}`);
-      res.status(500).send({ msg: 'Error!' });
+    if (err.message === 'Нет карточки/пользователя по заданному id') {
+      return res.status(404).send({ message: 'Нет карточки' });
     }
+    res.status(500).send({ mmessage: 'Error!' });
   });
 
 const likeCard = (req, res) => {
@@ -57,7 +54,6 @@ const likeCard = (req, res) => {
       } else if (err.message === 'Нет карточки/пользователя по заданному id') {
         res.status(404).send({ msg: 'Нет карточки' });
       } else {
-        console.log(`Error${err}`);
         res.status(500).send({ msg: 'ошибка по-умолчанию' });
       }
     });
@@ -79,7 +75,6 @@ const dislikeCard = (req, res) => {
       } else if (err.message === 'Нет карточки/пользователя по заданному id') {
         res.status(404).send({ msg: 'Нет карточки' });
       } else {
-        console.log(`Error${err}`);
         res.status(500).send({ msg: 'ошибка по-умолчанию' });
       }
     });

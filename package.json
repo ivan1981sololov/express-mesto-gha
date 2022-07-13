@@ -12,15 +12,14 @@
   "author": "Author",
   "license": "ISC",
   "devDependencies": {
+    "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
-    "eslint": "^7.32.0",
     "nodemon": "^2.0.13"
   },
   "dependencies": {
     "express": "^4.17.1",
-    "mongoose": "^6.0.8",
-    "celebrate": "^2.0.0"
+    "mongoose": "^6.0.8"
   },
   "repository": {
     "type": "git",

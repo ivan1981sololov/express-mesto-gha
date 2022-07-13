@@ -3,6 +3,7 @@ const User = require('../models/user');
 const getUsers = (req, res) => User.find({})
   .then((users) => res.status(200).send(users))
   .catch((err) => {
+    // eslint-disable-next-line no-console
     console.log(`Error${err}`);
     res.status(500).send({ msg: 'Error!' });
   });
@@ -20,6 +21,7 @@ const getUser = (req, res) => {
       if (err.name === 'CastError') {
         res.status(400).send({ msg: 'Невалидный id' });
       } else {
+        // eslint-disable-next-line no-console
         console.log(`Error${err}`);
         res.status(500).send({ msg: 'Error!' });
       }
@@ -32,6 +34,7 @@ const createUser = (req, res) => User.create({ ...req.body })
     if (err.name === 'ValidationError') {
       res.status(400).send({ msg: 'Некорректные данные' });
     } else {
+      // eslint-disable-next-line no-console
       console.log(`Error${err}`);
       res.status(500).send({ msg: 'Error!' });
     }
@@ -50,6 +53,7 @@ const updeteProfile = (req, res) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ msg: 'Некорректные данные' });
       } else {
+        // eslint-disable-next-line no-console
         console.log(`Error${err}`);
         res.status(500).send({ msg: 'Error!' });
       }
@@ -65,16 +69,18 @@ const updateAvatar = (req, res) => {
     { new: true, runValidators: true },
   )
     .then((user) => {
+      // eslint-disable-next-line no-console
       console.log(user);
       res.status(200).send(user);
     })
+    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ msg: 'Некорректные данные' });
-      } else {
-        console.log(`Error${err}`);
-        res.status(500).send({ msg: 'Error!' });
       }
+      // eslint-disable-next-line no-console
+      console.log(`Error${err}`);
+      res.status(500).send({ msg: 'Error!' });
     });
 };
 

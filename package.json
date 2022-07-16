@@ -1,5 +1,5 @@
 {
-  "name": "express-mesto",
+  "name": "express-mesto-gha",
   "version": "0.1.0",
   "private": true,
   "description": "`/routes` — папка с файлами роутера  \r `/controllers` — папка с файлами контроллеров пользователя и карточки   \r `/models` — папка с файлами описания схем пользователя и карточки",
@@ -9,24 +9,33 @@
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  "author": "Author",
+  "author": "Ivan",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
+    "eslint": "^7.32.0",
     "nodemon": "^2.0.13"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "celebrate": "^15.0.0",
     "express": "^4.17.1",
-    "mongoose": "^6.0.8"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.8",
+    "validator": "^13.6.0"
+  },
+  "eslintConfig": {
+    "extends": []
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ivan1981sololov/express-mesto.git"
+    "url": "git+https://github.com/ivan1981sololov/express-mesto-gha.git"
   },
   "bugs": {
-    "url": "https://github.com/ivan1981sololov/express-mesto/issues"
+    "url": "https://github.com/ivan1981sololov/express-mestogha-/issues"
   },
-  "homepage": "https://github.com/ivan1981sololov/express-mesto#readme"
+  "homepage": "https://github.com/ivan1981sololov/express-mesto-gha#readme"
 }

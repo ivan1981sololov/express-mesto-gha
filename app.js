@@ -48,7 +48,8 @@ app.use('/cards', routesCards);
 
 app.all('*', (req, res, next) => next(new NotFound('Ресурс не найден')));
 
-app.use(errors);
+app.use(errors());
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Ссылка на сервер: http://localhost:${PORT}`);

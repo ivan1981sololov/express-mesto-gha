@@ -1,12 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { celebrate, Joi } = require('celebrate');
+const { errors } = require('celebrate');
 const validator = require('validator');
 const routesCards = require('./routes/cards');
 const routesUsers = require('./routes/users');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errors = require('./middlewares/errors');
+const NotFound = require('./errors/NotFound');
 
 const PORT = 3000;
 const app = express();
@@ -33,7 +34,7 @@ app.post('/signup', celebrate({
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().custom((value, helper) => {
       if (validator.isURL(value, { require_protocol: true })) {
-        return value;
+        return value.match(/https?:\/\/(www\.)?[-\w@:%\\+~#=]{1,256}\.[a-z0-9()]{1,6}\b([-\w()@:%\\+~#=//?&]*)/i);
       }
       return helper.message('Невалидный url');
     }),
@@ -45,9 +46,7 @@ app.use(auth);
 app.use('/users', routesUsers);
 app.use('/cards', routesCards);
 
-app.all('*', (req, res) => {
-  res.status(404).send({ message: 'Ресурс не найден' });
-});
+app.all('*', (req, res, next) => next(new NotFound('Ресурс не найден')));
 
 app.use(errors);
 

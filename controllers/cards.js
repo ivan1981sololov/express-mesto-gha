@@ -16,7 +16,7 @@ const createCards = (req, res, next) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.message === 'Validation failed' || err.name === 'ValidationError') {
-        next(new CastError('Переданы некорректные данные при создании карточки'));
+        return next(new CastError('Переданы некорректные данные при создании карточки'));
       }
       const error = new Error('На сервере произошла ошибка');
       error.statusCode = 500;
@@ -33,7 +33,7 @@ const deleteCard = (req, res, next) => {
   })
     .then((card) => {
       if (!card) {
-        next(new NotFound('Нет карточки/пользователя по заданному id'));
+        return next(new NotFound('Нет карточки/пользователя по заданному id'));
       }
       if (card.owner.toString() === cardById.toString()) {
         Card.findOneAndRemove({
@@ -42,17 +42,20 @@ const deleteCard = (req, res, next) => {
         })
           .then((cardRes) => {
             res.send(cardRes);
+          })
+          .catch(() => {
+            next(new CastError('Переданы некорректные данные'));
           });
-      } else {
+          } else {
         next(new ForbiddenError('Карточку создали не вы!'));
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new CastError('Невалидный id'));
+        return next(new CastError('Невалидный id'));
       }
       if (err.message === 'NotFound') {
-        next(new NotFound('Нет карточки/пользователя по заданному id'));
+        return next(new NotFound('Нет карточки/пользователя по заданному id'));
       }
       const error = new Error('На сервере произошла ошибка');
       error.statusCode = 500;
@@ -76,10 +79,10 @@ const likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new CastError('Невалидный id'));
+        return next(new CastError('Невалидный id'));
       }
       if (err.message === 'NotFound') {
-        next(new NotFound('Нет карточки/пользователя по заданному id'));
+        return next(new NotFound('Нет карточки/пользователя по заданному id'));
       }
       const error = new Error('На сервере произошла ошибка');
       error.statusCode = 500;
@@ -102,10 +105,10 @@ const dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new CastError('Невалидный id'));
+        return next(new CastError('Невалидный id'));
       }
       if (err.message === 'NotFound') {
-        next(new NotFound('Нет карточки/пользователя по заданному id'));
+        return next(new NotFound('Нет карточки/пользователя по заданному id'));
       }
       const error = new Error('На сервере произошла ошибка');
       error.statusCode = 500;

@@ -24,10 +24,10 @@ const createUser = (req, res, next) => {
         })
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            next(new CastError('Переданны некорректные данные'));
+            return next(new CastError('Переданны некорректные данные'));
           }
           if (err.name === 'MongoServerError' || err.message === 'Validation failed') {
-            next(new ConflictError('При регистрации указан email, который уже существует на сервере'));
+            return next(new ConflictError('При регистрации указан email, который уже существует на сервере'));
           }
           const error = new Error('На сервере произошла ошибка');
           error.statusCode = 500;
@@ -39,9 +39,9 @@ const createUser = (req, res, next) => {
 
 const getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => {
+    .then((res) => {
       if (!users) {
-        throw new CastError('Переданны некорректные данные');
+        res.send(res);
       }
       res.send(users);
     })
@@ -92,7 +92,7 @@ const updateUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(new CastError('Переданны некорректные данные'));
+        return next(new CastError('Переданны некорректные данные'));
       }
       const error = new Error('На сервере произошла ошибка');
       error.statusCode = 500;
@@ -118,7 +118,7 @@ const updateAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(new CastError('Переданны некорректные данные'));
+        return next(new CastError('Переданны некорректные данные'));
       }
       const error = new Error('На сервере произошла ошибка');
       error.statusCode = 500;
@@ -135,14 +135,14 @@ const login = (req, res, next) => {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        next(new AuthorizedError('Неправильные почта или пароль'));
+        return next(new AuthorizedError('Неправильные почта или пароль'));
       }
       userId = user._id;
       return bcrypt.compare(password, user.password);
     })
     .then((matched) => {
       if (!matched) {
-        next(new AuthorizedError('Неправильные почта или пароль'));
+        return next(new AuthorizedError('Неправильные почта или пароль'));
       }
 
       // аутентификация успешна
@@ -154,10 +154,13 @@ const login = (req, res, next) => {
 
       res.send({ token });
     })
-    .catch((err) => {
-      next(new AuthorizedError(err.message)); // обработка ошибки для роутов без авторизации
-    });
-};
+    .catch((err) => { if (err.name === 'CastError') {
+       next(new CastError('Переданны некорректные данные'));
+      }
+      const error = new Error('На сервере произошла ошибка');
+      error.statusCode = 500;
+      return next(error);
+});
 
 const getUserMe = (req, res, next) => {
   const id = req.user._id;
@@ -174,7 +177,7 @@ const getUserMe = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new CastError('Переданны некорректные данные'));
+      return next(new CastError('Переданны некорректные данные'));
       }
       const error = new Error('На сервере произошла ошибка');
       error.statusCode = 500;
@@ -185,3 +188,4 @@ const getUserMe = (req, res, next) => {
 module.exports = {
   createUser, getUsers, getUserById, updateUser, updateAvatar, login, getUserMe,
 };
+}

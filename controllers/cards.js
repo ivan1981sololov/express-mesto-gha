@@ -43,7 +43,7 @@ const deleteCard = (req, res, next) => {
           .then((cardRes) => {
             res.send(cardRes);
           })
-          .catch(() => {
+          .catch((err) => {
             next(new CastError('Переданы некорректные данные'));
           });
           } else {

@@ -151,13 +151,10 @@ const login = (req, res, next) => {
 
       res.send({ token });
     })
-    .catch((err) => { if (err.name === 'CastError') {
-       next(new CastError('Переданны некорректные данные'));
-      }
-      const error = new Error('На сервере произошла ошибка');
-      error.statusCode = 500;
-      return next(error);
-});
+    .catch((err) => {
+      next(err);
+    });
+  };
 
 const getUserMe = (req, res, next) => {
   const id = req.user._id;
@@ -185,4 +182,3 @@ const getUserMe = (req, res, next) => {
 module.exports = {
   createUser, getUsers, getUserById, updateUser, updateAvatar, login, getUserMe,
 };
-}

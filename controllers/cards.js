@@ -27,41 +27,34 @@ const createCards = (req, res, next) => {
 
 const deleteCard = (req, res, next) => {
   const cardById = req.user._id;
-  Card.findById({
-    _id: req.params.cardId,
-    owner: cardById,
-  })
+  Card.findById(
+    req.params.cardId,
+  )
+    .orFail(() => {
+      throw new NotFound('Карточка с указанным _id не найдена!');
+    })
+    // eslint-disable-next-line consistent-return
     .then((card) => {
-      if (!card) {
-        return next(new NotFound('Нет карточки/пользователя по заданному id'));
-      }
       if (card.owner.toString() === cardById.toString()) {
-        Card.findOneAndRemove({
-          _id: req.params.cardId,
-          owner: cardById,
-        })
-          .then((cardRes) => {
-            res.send(cardRes);
+        Card.findOneAndRemove(
+          req.params.cardId,
+        )
+          .then(() => {
+            res.send({ message: 'Карточка удалена успешно!' });
           })
-          .catch((err) => {
-            next(new CastError('Переданы некорректные данные'));
-          });
-          } else {
-        next(new ForbiddenError('Карточку создали не вы!'));
+          // eslint-disable-next-line no-unused-vars
+          .catch(next);
+      } else {
+        throw new ForbiddenError('Карточку создали не вы!');
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new CastError('Невалидный id'));
+        next(new CastError('Переданы неккоретные данные'));
+      } else {
+        next(err);
       }
-      if (err.message === 'NotFound') {
-        return next(new NotFound('Нет карточки/пользователя по заданному id'));
-      }
-      const error = new Error('На сервере произошла ошибка');
-      error.statusCode = 500;
-      return next(error);
-    })
-    .catch(next);
+    });
 };
 
 const likeCard = (req, res, next) => {

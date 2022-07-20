@@ -13,6 +13,7 @@ const createUser = (req, res, next) => {
   User.findOne({ email });
   // хешируем пароль
   bcrypt.hash(password, 10)
+    // eslint-disable-next-line no-shadow
     .then((password) => {
       User.create({
         name, about, avatar, email, password,
@@ -137,6 +138,7 @@ const login = (req, res, next) => {
       userId = user._id;
       return bcrypt.compare(password, user.password);
     })
+    // eslint-disable-next-line consistent-return
     .then((matched) => {
       if (!matched) {
         return next(new AuthorizedError('Неправильные почта или пароль'));
@@ -154,7 +156,7 @@ const login = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
-  };
+};
 
 const getUserMe = (req, res, next) => {
   const id = req.user._id;
@@ -171,7 +173,7 @@ const getUserMe = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-      return next(new CastError('Переданны некорректные данные'));
+        return next(new CastError('Переданны некорректные данные'));
       }
       const error = new Error('На сервере произошла ошибка');
       error.statusCode = 500;
